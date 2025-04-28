@@ -1,1 +1,27 @@
-
+{
+  "type": 3,
+  "content": {
+    "version": "KqlItem/1.0",
+    "query": "let GeoIPDB = _GetWatchlist('geoip');\r\nGeoIPDB\r\n| where isnotempty(latitude) and isnotempty(longitude)\r\n| project countryname, cityname, latitude, longitude\r\n| summarize Count = count() by countryname, cityname, latitude, longitude",
+    "size": 0,
+    "timeContext": {
+      "durationMs": 86400000
+    },
+    "queryType": 0,
+    "resourceType": "microsoft.operationalinsights/workspaces",
+    "visualization": "map",
+    "mapSettings": {
+      "locInfo": "CountryRegion",
+      "locInfoColumn": "countryname",
+      "latitude": "latitude",
+      "longitude": "longitude",
+      "sizeSettings": "Count",
+      "sizeAggregation": "Max",
+      "minSize": 20,
+      "legendMetric": "Count",
+      "legendAggregation": "Sum",
+      "itemColorSettings": null
+    }
+  },
+  "name": "query - 1"
+}
