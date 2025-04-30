@@ -1,4 +1,7 @@
-# 🛡️ Azure SOC + Honeynet Lab
+# 🛡️ Azure Honeynet + SOC Lab
+
+![Cloudhoneynet+SOC](https://github.com/user-attachments/assets/d57222d8-b6e2-4dd6-ac18-a239c11b7def)
+
 
 ## 📄 Overview
 
@@ -62,16 +65,84 @@ In this project, I build a mini honeynet in Azure and ingest logs from various r
 
 ---
 
-## 🗺️ Data and Attack Maps
+## 🗺️ Architecture Diagram 
 
-- Data snapshots and attack maps will be added here.
-- Before vs After Hardening metrics and screenshots will be presented.
+Before vs After Hardening metrics and screenshots will be presented.
 
-Each metric section is supplemented with **screenshots and graphs** showing the differences.
+## Architecture Before Hardening / Security Controls
+
+![Before-harden](https://github.com/user-attachments/assets/778f4443-241a-4768-ba75-ac1eed8cbbe8)
+
+## Architecture After Hardening / Security Controls
+
+![After-Harden](https://github.com/user-attachments/assets/b18180f2-3dc0-484d-a29d-3e778d7114cd)
 
 ---
 
-## 🔥 Security Hardening Phase
+## 🗺️ Attack Maps
+
+## Attack Maps Before Hardening / Security Controls
+
+![Screenshot 2025-04-29 050803](https://github.com/user-attachments/assets/34c1b31c-670f-47b9-8133-c031d500551d)
+
+![Screenshot 2025-04-29 050618](https://github.com/user-attachments/assets/4f403891-a7a9-4fb2-b139-3ae4cfc1c56b)
+
+![Screenshot 2025-04-29 050659](https://github.com/user-attachments/assets/dfa1dc39-ada9-4f4a-be02-fdf0d6c1a95e)
+
+![Screenshot 2025-04-29 045915](https://github.com/user-attachments/assets/1456487b-6b12-4bb3-8585-29801d4930b0)
+
+
+## Metrics Before Hardening / Security Controls
+
+The following table shows the metrics we measured in our insecure environment for 24 hours:
+- | Start Time 2025-04-27 04:59:46
+- | Stop Time 2025-04-28 04:59:46
+
+| Metric                    | Count  |
+|---------------------------|--------|
+| SecurityEvent             | 7,040  |
+| Syslog                   | 8,262  |
+| SecurityAlert             | 13     |
+| SecurityIncident          | 38     |
+| AzureNetworkAnalytics_CL  | 17,543 |
+
+Due to delays in data ingestion from the Azure Monitor Agent (AMA), SecurityEvent logs were not fully captured in Log Analytics. Therefore, the data presented here has been manually extracted directly from the VM’s Event Viewer after applying custom filters.
+
+![Screenshot 2025-04-28 153412](https://github.com/user-attachments/assets/465d30c5-c343-4244-9ab3-d3eeda8dffb2)
+
+## Attack Maps After Hardening / Security Controls
+
+- All map queries actually returned no results due to no instances of malicious activity for the 24 hour period after hardening.
+
+![image](https://github.com/user-attachments/assets/8cee643c-d352-4fcc-9506-ea8b9965a78a)
+
+## Metrics After Hardening / Security Controls
+
+The following table shows the metrics we measured in our environment for another 24 hours, but after we have applied security controls:
+- | Start Time 2025-04-29 11:50:28
+- | Stop Time 2025-04-30 11:50:28
+
+| Metric                    | Count  |
+|---------------------------|--------|
+| SecurityEvent             | 150  |
+| Syslog                    |  0   |
+| SecurityAlert             | 0   |
+| SecurityIncident          | 0   |
+| AzureNetworkAnalytics_CL  | 66 |
+
+---
+
+## 📉 Results
+
+| Metric                    | Before Hardening | After Hardening | Change after security environment|
+|---------------------------|------------------|------------------|----------------|
+| SecurityEvent             | 7,040            | 150              | 97.87%         |
+| Syslog                   | 8,262            | 0                | 100.00%        |
+| SecurityAlert             | 13               | 0                | 100.00%        |
+| SecurityIncident          | 38               | 0                | 100.00%        |
+| AzureNetworkAnalytics_CL  | 17,543           | 66               | 99.62%         |
+
+## Security Hardening Phase
 
 After baseline collection:
 - NSG rules were tightened.
@@ -87,52 +158,38 @@ After baseline collection:
 
 ## 🏁 Conclusion
 
-This Azure-based mini SOC + Honeynet setup demonstrated:
+In this project, a mini honeynet was constructed in Microsoft Azure and the logs were pushed into a Log Analytics Workspace for analysis. Microsoft Sentinel was also employed to trigger alerts and create incidents based on the ingested logs. Additionally, metrics were measured in the insecure environment before security controls were applied, and then again after implementing security measures. The number of security events and incidents were drastically reduced after the security controls were applied, demonstrating their effectiveness.
+
+It is worth noting that if the resources within the network were heavily utilized by regular users, it is likely that more security events and alerts may have been generated within the 24-hour period following the implementation of the security controls.
+
+In short, this Azure-based mini SOC + Honeynet setup demonstrated:
 - How easily vulnerable systems attract attacks
 - The effectiveness of hardening measures
 - Real-world incident detection via native Azure tools
 
-The lab validated the importance of proactive defense techniques and continuous monitoring to reduce organizational risk.
+---
+
+## KQL Queries
+
+```kusto
+union isfuzzy=true
+    (SecurityEvent 
+        | summarize Count = count() 
+        | extend TableName = "SecurityEvent"),
+    (Syslog 
+        | summarize Count = count() 
+        | extend TableName = "Syslog"),
+    (SecurityAlert 
+        | summarize Count = count() 
+        | extend TableName = "SecurityAlert"),
+    (SecurityIncident 
+        | summarize Count = count() 
+        | extend TableName = "SecurityIncident"),
+    (AzureNetworkAnalytics_CL 
+        | summarize Count = count() 
+        | extend TableName = "AzureNetworkAnalytics_CL")
+| project TableName, Count
 
 ---
 
-## 📥 Planned Additions (Optional)
-
-- Attack Simulation logs (using Attacker VM)
-- Advanced Metrics (e.g., MITRE ATT&CK mapping)
-- Sysmon integration for richer Windows telemetry
-- Export Workbook templates and KQL queries
-
----
-
-## ✅ Status
-- [x] Environment setup (Azure resources, networking)
-- [x] Data Collection via DCRs and Log Analytics
-- [x] Initial metrics collected
-- [ ] Before vs After Hardening Analysis
-- [ ] Final Conclusion with Charts and Impact Reports
-
----
-
-## 📎 Example Comparison Table: Before vs After
-
-| Metric | Before Hardening | After Hardening | % Improvement |
-|:---|:---|:---|:---|
-| Successful Attacks | 30 | 5 | 83% |
-| Malware Detections | 15 | 2 | 86% |
-| Unauthorized Logins | 20 | 1 | 95% |
-
-*(Sample — replace with your real data once metrics are collected.)*
-
----
-
-# 📌 Notes
-
-- Installing **Sysmon** on Windows honeypots can give richer telemetry.
-- Attack simulations can be expanded (e.g., RDP brute force, malware uploads, privilege escalation).
-
----
-
-# 🎯 Author
-*Add your name or team here.*
 
