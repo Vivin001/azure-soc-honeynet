@@ -1,15 +1,3 @@
-// 🔐 Workbook: Windows RDP Auth Failures (Map View)
-// Description: Azure Workbook visualization that maps failed RDP login attempts from honeypot Windows VMs.
-// - Uses GeoIP-enriched IP data
-// - Based on SecurityEvent log (Event ID 4625, Logon Type 10)
-// - Displays attack origin by country and city
-// 🧭 How to Use:
-//   1. Go to Azure Sentinel → Workbooks
-//   2. Click "New" → "Advanced Editor"
-//   3. Paste the contents of this file (without comment lines)
-4. Save & Run to visualize
-
-
 {
   "type": 3,
   "content": {
