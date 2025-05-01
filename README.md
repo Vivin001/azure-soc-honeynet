@@ -91,6 +91,7 @@ Before vs After Hardening metrics and screenshots will be presented.
 
 ![Screenshot 2025-04-29 045915](https://github.com/user-attachments/assets/1456487b-6b12-4bb3-8585-29801d4930b0)
 
+- To generate these maps and visualizations, please refer to the steps outlined in the [workbook.md](https://github.com/Vivin001/azure-soc-honeynet/blob/main/workbooks.md) file.
 
 ## Metrics Before Hardening / Security Controls
 
